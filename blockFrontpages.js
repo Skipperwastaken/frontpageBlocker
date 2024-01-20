@@ -6,14 +6,17 @@
 // @match https://*.youtube.com
 // @match https://*.youtube.com/*
 // @run-at document-start
-// @version 0.0.1
+// @version 0.0.2
 // ==/UserScript==
 
 const bannedPatterns = [
     /^https?:\/\/.*\.reddit\.com\/?$/,
     /^https?:\/\/.+\.reddit\.com\/r\/\w+\/?$/,
+    /^https?:\/\/.+\.reddit\.com\/r\/\w+\/top\/?/,
     /^https?:\/\/www.youtube.com\/?$/
     ];
+
+let url = window.location.href;
 
 function block() // Function will block the website.
 {
@@ -29,7 +32,17 @@ function block() // Function will block the website.
     }
 }
 
-const url = window.location.href;
-if(bannedPatterns.find(pattern => url.match(pattern))) {
-    block();
-}
+function check() {
+    if(bannedPatterns.find(pattern => url.match(pattern))) {
+        block();
+    }
+};
+
+check();
+
+setInterval(function() {
+    if (url != location.href) {
+        url = location.href;
+        check();
+    }
+}, 500);
